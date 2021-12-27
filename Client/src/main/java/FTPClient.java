@@ -10,26 +10,22 @@ import java.net.Socket;
 public class FTPClient {
     public static void main(String[] args) throws Exception {
 
-        long start = System.currentTimeMillis();
-
-        // localhost for testing
-        Socket socket = new Socket("127.0.0.1", 8000);
+          Socket socket = new Socket("127.0.0.1", 8000);
         System.out.println("Connecting...");
         InputStream inputStream = socket.getInputStream();
         // receive file
-        new FTPClient().receiveFile(inputStream);
+//        new FTPClient().receiveFile(inputStream);
         OutputStream outputStream = socket.getOutputStream();
-        //new FTPClient().send(outputStream);
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
+        new FTPClient().send(outputStream);
 
         socket.close();
     }
 
-
     public void send(OutputStream outputStream) throws Exception {
-        // sendfile
-        File myFile = new File("FTPApp/about.txt)");
+
+        File serverDirectory = new File(System.getProperty("user.home") + "\\Desktop\\FTPApp");
+        serverDirectory.mkdirs();
+        File myFile = new File(serverDirectory, "hello-local.txt");
         byte[] byteArray = new byte[(int) myFile.length() + 1];
         FileInputStream fileInputStream = new FileInputStream(myFile);
         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -42,13 +38,14 @@ public class FTPClient {
     public void receiveFile(InputStream is) throws Exception {
         int filesize = 6022386;
         int bytesRead;
-        int current = 0;
+        int current;
         byte[] myByteArray = new byte[filesize];
 
         FileOutputStream fileOutputStream = new FileOutputStream("def.txt");
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
         bytesRead = is.read(myByteArray, 0, myByteArray.length);
         current = bytesRead;
+        System.out.println("receiving");
 
         do {
             bytesRead = is.read(myByteArray, current,
